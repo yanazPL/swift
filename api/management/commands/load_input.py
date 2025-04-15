@@ -14,7 +14,7 @@ class Command(BaseCommand):
             hqs = {}
             branches = []
             for row in csv_reader:
-                iso2, code, _, name, address, country, *_ = row
+                iso2, code, _, name, address, _, country, *_ = row
                 address = address.lstrip()
 
                 code_object = Code(
