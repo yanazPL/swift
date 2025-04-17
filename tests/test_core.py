@@ -1,6 +1,17 @@
 from django.urls import reverse
 import pytest
+from api.models import Code
 from api.serializers import HqSerializer, BranchSerializer
+
+
+CODE_DATA = {
+    "address": "TESTSTRASSE 1, BERLIN, 10115",
+    "bankName": "TEST BANK DEUTSCHLAND",
+    "countryName": "GERMANY",
+    "countryISO2": "DE",
+    "isHeadquarter": True,
+    "swiftCode": "DEDEDEDEXXX"
+}
 
 
 @pytest.mark.django_db
@@ -37,3 +48,8 @@ class TestAPI:
         assert branch_data["countryISO2"] == "PL"
         assert not branch_data["isHeadquarter"]
         assert not "branches" in branch_data
+
+    def test_post(self, client):
+        response = client.post(reverse("swift_code_create"), data=CODE_DATA)
+        assert Code.objects.filter(swift_code=CODE_DATA["swiftCode"]).exists()
+        assert response.statugs_code == 201
