@@ -39,3 +39,28 @@ def headquarter_with_2_branches(branch):
         headquarter=branch.headquarter
     )
     return branch.headquarter
+
+@pytest.fixture
+def german_headquarter_with_branch():
+    """Tworzy centralę z oddziałami w Niemczech"""
+    hq = Code.objects.create(
+        address="HAUPTSTRASSE 1, MÜNCHEN, 80331",
+        bank_name="HAUPTBANK DEUTSCHLAND",
+        country_name="GERMANY",
+        country_iso_2="DE",
+        is_headquarter=True,
+        swift_code="HBDEDEMM"
+    )
+
+    # Tworzenie oddziałów
+    Code.objects.create(
+        address="ZWEIGSTELLE 1, FRANKFURT, 60313",
+        bank_name="HAUPTBANK DEUTSCHLAND",
+        country_name="GERMANY",
+        country_iso_2="DE",
+        is_headquarter=False,
+        swift_code="HBDEDEFF",
+        headquarter=hq
+    )
+
+    return hq

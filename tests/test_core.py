@@ -52,4 +52,16 @@ class TestAPI:
     def test_post(self, client):
         response = client.post(reverse("swift_code_create"), data=CODE_DATA)
         assert Code.objects.filter(swift_code=CODE_DATA["swiftCode"]).exists()
-        assert response.statugs_code == 201
+        assert response.status_code == 201
+
+    def test_list_for_country_de(self, client, headquarter_with_2_branches, german_headquarter_with_branch):
+        url = reverse("swif_codes_for_country", kwargs={"country_iso_2": "DE"})
+        response = client.get(url)
+        assert response.status_code == 200
+        assert len(response.data) == 2
+
+    def test_list_for_country_pl(self, client, headquarter_with_2_branches, german_headquarter_with_branch):
+        url = reverse("swif_codes_for_country", kwargs={"country_iso_2": "PL"})
+        response = client.get(url)
+        assert response.status_code == 200
+        assert len(response.data) == 3
