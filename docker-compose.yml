@@ -1,0 +1,8 @@
+services:
+  movies:
+    build: ./.
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./.:/usr/src/SWIFT/
+    ports:
+      - 8080:8000
