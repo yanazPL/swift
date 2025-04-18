@@ -2,6 +2,7 @@ from django.urls import reverse
 import pytest
 from api.models import Code
 from api.serializers import HqSerializer, BranchSerializer
+from rest_framework.exceptions import ErrorDetail
 
 
 CODE_DATA = {
@@ -53,6 +54,21 @@ class TestAPI:
         response = client.post(reverse("swift_code_create"), data=CODE_DATA)
         assert Code.objects.filter(swift_code=CODE_DATA["swiftCode"]).exists()
         assert response.status_code == 201
+
+    def test_post_duplicate(self, client):
+        client.post(reverse("swift_code_create"), data=CODE_DATA)
+        response = client.post(reverse("swift_code_create"), data=CODE_DATA)
+        assert response.status_code == 400
+        assert isinstance(response.data["swiftCode"][0], ErrorDetail)
+
+    def test_post_too_long_code(self, client):
+        data = CODE_DATA
+        data["swiftCode"] = "A" * 15
+        response = client.post(reverse("swift_code_create"), data=data)
+        obj_from_data = response.data["swiftCode"][0]
+        assert response.status_code == 400
+        assert isinstance(obj_from_data, ErrorDetail)
+        assert obj_from_data.code == "max_length"
 
     def test_list_for_country_de(self, client, headquarter_with_2_branches, german_headquarter_with_branch):
         url = reverse("swif_codes_for_country", kwargs={"country_iso_2": "DE"})

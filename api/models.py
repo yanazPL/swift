@@ -6,7 +6,7 @@ class Code(models.Model):
     bank_name = models.CharField()
     country_iso_2 = models.CharField()
     country_name = models.CharField()
-    swift_code = models.CharField(unique=True)
+    swift_code = models.CharField(unique=True, max_length=11)
     is_headquarter = models.BooleanField()
     headquarter = models.ForeignKey("self", on_delete=models.CASCADE, related_name="branches", null=True)
 

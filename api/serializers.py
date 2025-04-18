@@ -8,7 +8,7 @@ class BranchSerializer(serializers.ModelSerializer):
     countryISO2 = serializers.CharField(source='country_iso_2')
     countryName = serializers.CharField(source='country_name')
     isHeadquarter = serializers.BooleanField(source='is_headquarter')
-    swiftCode = serializers.CharField(source='swift_code')
+    swiftCode = serializers.CharField(source='swift_code', max_length=11)
 
     class Meta:
         model = Code
@@ -22,6 +22,10 @@ class BranchSerializer(serializers.ModelSerializer):
             'swiftCode',
         ]
 
+    def validate_swiftCode(self, value):
+        if Code.objects.filter(swift_code=value).exists():
+            raise serializers.ValidationError(f"SWIFT code {value} already exists")
+        return value
 
 class HqSerializer(BranchSerializer):
     class Meta:
