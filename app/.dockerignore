@@ -3,3 +3,6 @@ env
 Dockerfile
 Dockerfile.prod
 docker-compose.yml
+db.sqlite3
+
+/db_data/

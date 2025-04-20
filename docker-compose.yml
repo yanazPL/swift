@@ -1,8 +1,15 @@
 services:
-  movies:
-    build: ./.
+  django_app:
+    environment:
+        - DJANGO_DB_PATH=/app/db_data/db.sqlite3
+        - DJANGO_SETTINGS_MODULE=SWIFT.settings
+        - PYTHONPATH=/app
+    build: ./app
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./.:/usr/src/SWIFT/
+      - ./app:/app/
+      - db_volume:/app/db_data
     ports:
       - 8080:8000
+volumes:
+    db_volume:
