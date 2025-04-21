@@ -1,8 +1,8 @@
-from django.urls import reverse
 import pytest
-from api.models import Code
-from api.serializers import HqSerializer, BranchSerializer
 from rest_framework.exceptions import ErrorDetail
+from django.urls import reverse
+from api.models import Code
+
 
 
 @pytest.fixture
@@ -38,7 +38,7 @@ class TestAPI:
         assert response.status_code == 204
         assert headquarter_with_2_branches.branches.count() == 1
 
-    def test_hq_with_branch(self, client, branch):
+    def test_get_hq_with_branch(self, client, branch):
         url = reverse("swift_code_detail", kwargs={"swift_code": branch.headquarter.swift_code})
         response = client.get(url, format="json")
         branch_data = response.data["branches"][0]
@@ -94,4 +94,13 @@ class TestAPI:
         code_data["countryName"] = "germany"
         response = client.post(reverse("swift_code_create"), data=code_data)
         assert response.status_code == 400
+        assert isinstance(response.data["countryName"][0], ErrorDetail)
+
+    def test_post_missing_fields(self, client):
+        response = client.post(reverse("swift_code_create"), data={})
+        assert response.status_code == 400
+        assert isinstance(response.data["address"][0], ErrorDetail)
+        assert isinstance(response.data["bankName"][0], ErrorDetail)
+        assert isinstance(response.data["swiftCode"][0], ErrorDetail)
+        assert isinstance(response.data["countryISO2"][0], ErrorDetail)
         assert isinstance(response.data["countryName"][0], ErrorDetail)
