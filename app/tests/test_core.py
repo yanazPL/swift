@@ -5,14 +5,16 @@ from api.serializers import HqSerializer, BranchSerializer
 from rest_framework.exceptions import ErrorDetail
 
 
-CODE_DATA = {
-    "address": "TESTSTRASSE 1, BERLIN, 10115",
-    "bankName": "TEST BANK DEUTSCHLAND",
-    "countryName": "GERMANY",
-    "countryISO2": "DE",
-    "isHeadquarter": True,
-    "swiftCode": "DEDEDEDEXXX"
-}
+@pytest.fixture
+def code_data():
+    return {
+        "address": "TESTSTRASSE 1, BERLIN, 10115",
+        "bankName": "TEST BANK DEUTSCHLAND",
+        "countryName": "GERMANY",
+        "countryISO2": "DE",
+        "isHeadquarter": True,
+        "swiftCode": "DEDEDEDEXXX"
+    }
 
 
 @pytest.mark.django_db
@@ -50,19 +52,19 @@ class TestAPI:
         assert not branch_data["isHeadquarter"]
         assert not "branches" in branch_data
 
-    def test_post(self, client):
-        response = client.post(reverse("swift_code_create"), data=CODE_DATA)
-        assert Code.objects.filter(swift_code=CODE_DATA["swiftCode"]).exists()
+    def test_post(self, client, code_data):
+        response = client.post(reverse("swift_code_create"), data=code_data)
+        assert Code.objects.filter(swift_code=code_data["swiftCode"]).exists()
         assert response.status_code == 201
 
-    def test_post_duplicate(self, client):
-        client.post(reverse("swift_code_create"), data=CODE_DATA)
-        response = client.post(reverse("swift_code_create"), data=CODE_DATA)
+    def test_post_duplicate(self, client, code_data):
+        client.post(reverse("swift_code_create"), data=code_data)
+        response = client.post(reverse("swift_code_create"), data=code_data)
         assert response.status_code == 400
         assert isinstance(response.data["swiftCode"][0], ErrorDetail)
 
-    def test_post_too_long_code(self, client):
-        data = CODE_DATA
+    def test_post_too_long_code(self, client, code_data):
+        data = code_data
         data["swiftCode"] = "A" * 15
         response = client.post(reverse("swift_code_create"), data=data)
         obj_from_data = response.data["swiftCode"][0]
