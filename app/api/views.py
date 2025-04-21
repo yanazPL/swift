@@ -1,16 +1,10 @@
-from django.shortcuts import render
-
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.generics import RetrieveDestroyAPIView, CreateAPIView, ListAPIView
 from api.serializers import HqSerializer, BranchSerializer
 from api.models import Code
 
+
 class SwiftRetrieveDestroyAPIView(RetrieveDestroyAPIView):
-    """
-    API view that retrieves or deletes a bank code instance based on swift_code.
-    Uses HqSerializer for headquarters and BranchSerializer for branches.
-    """
     queryset = Code.objects.all()
     lookup_field = 'swift_code'
     def get_serializer_class(self):
@@ -27,7 +21,6 @@ class SwiftCreateAPIView(CreateAPIView):
 class SwiftCodesListForCountryAPIView(ListAPIView):
     queryset = Code.objects.all().prefetch_related('branches')
     serializer_class = None
-
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()

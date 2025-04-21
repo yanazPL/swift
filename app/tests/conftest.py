@@ -52,7 +52,6 @@ def german_headquarter_with_branch():
         swift_code="HBDEDEMM"
     )
 
-    # Tworzenie oddziałów
     Code.objects.create(
         address="ZWEIGSTELLE 1, FRANKFURT, 60313",
         bank_name="HAUPTBANK DEUTSCHLAND",
@@ -62,5 +61,4 @@ def german_headquarter_with_branch():
         swift_code="HBDEDEFF",
         headquarter=hq
     )
-
     return hq

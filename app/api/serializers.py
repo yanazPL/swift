@@ -27,6 +27,7 @@ class BranchSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f"SWIFT code {value} already exists")
         return value
 
+
 class HqSerializer(BranchSerializer):
     class Meta:
         model = Code
