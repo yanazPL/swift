@@ -27,6 +27,16 @@ class BranchSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f"SWIFT code {value} already exists")
         return value
 
+    def validate_countryISO2(self, value):
+        if value != value.upper():
+            raise serializers.ValidationError(f"Must be uppercase")
+        return value
+
+    def validate_countryName(self, value):
+        if value != value.upper():
+            raise serializers.ValidationError(f"Must be uppercase")
+        return value
+
 
 class HqSerializer(BranchSerializer):
     class Meta:

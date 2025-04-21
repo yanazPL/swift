@@ -83,3 +83,15 @@ class TestAPI:
         response = client.get(url)
         assert response.status_code == 200
         assert len(response.data) == 3
+
+    def test_post_lowercase_country_iso_2(self, client, code_data):
+        code_data["countryISO2"] = "de"
+        response = client.post(reverse("swift_code_create"), data=code_data)
+        assert response.status_code == 400
+        assert isinstance(response.data["countryISO2"][0], ErrorDetail)
+
+    def test_post_lowercase_country_name(self, client, code_data):
+        code_data["countryName"] = "germany"
+        response = client.post(reverse("swift_code_create"), data=code_data)
+        assert response.status_code == 400
+        assert isinstance(response.data["countryName"][0], ErrorDetail)
